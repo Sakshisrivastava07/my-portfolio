@@ -72,10 +72,21 @@ a:hover {
     font-size: 0.9rem;
     font-weight: bold;
     letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.3s ease;
 }
 
 .nav-center a:hover {
-    color: var(--color-orange);
+    color: var(--color-blue);
+}
+
+.nav-center a.active {
+    color: var(--color-blue);
+}
+
+/* Sibling fade effect when hovering over navbar */
+.nav-center:hover a:not(:hover):not(.active) {
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-outline {

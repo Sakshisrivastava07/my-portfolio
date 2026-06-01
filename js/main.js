@@ -136,4 +136,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }, 3000);
     }
+
+    // --- Active Navbar Highlighting (Scrollspy) ---
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-center a');
+    let isScrollingFromClick = false;
+
+    function updateActiveNavbarLink() {
+        if (isScrollingFromClick) return;
+
+        let current = '';
+        const scrollPosition = window.scrollY + 200; // offset for navbar height and triggers
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const targetId = link.getAttribute('href').substring(1);
+            if (targetId === current) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Direct click handler for instant feedback
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            isScrollingFromClick = true;
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            // Resume scrollspy after smooth scroll animation completes (~800ms)
+            setTimeout(() => {
+                isScrollingFromClick = false;
+            }, 800);
+        });
+    });
+
+    window.addEventListener('scroll', updateActiveNavbarLink);
+    updateActiveNavbarLink(); // Initialize on page load
 });

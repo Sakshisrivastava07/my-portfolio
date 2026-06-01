@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let mouseX = 0;
     let mouseY = 0;
-
+    
     // Track mouse for bone rotation
     window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
     });
-
+ 
     loader.load(modelUrl, function(gltf) {
         const model = gltf.scene;
         loadedModel = model;
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         model.position.set(0, -3.2, 0);
         model.scale.set(3.2, 3.2, 3.2); 
         scene.add(model);
-
+ 
         // Find spine/neck/head bone to rotate
         model.traverse((child) => {
             if (child.isBone) {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Apply a subtle floating if there are no skeleton animations
             loadedModel.position.y = -3.2 + Math.sin(clock.elapsedTime * 1.5) * 0.05;
         }
-
+ 
         // Apply mouse tracking to bone
         if (targetBone) {
             // Lerp bone rotation towards cursor. 
