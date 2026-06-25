@@ -60,7 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursorDot = document.getElementById('cursor-dot');
     const cursorOrb = document.getElementById('cursor-orb');
 
-    if (cursorDot && cursorOrb) {
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 
+                          ('ontouchstart' in window) || 
+                          (navigator.maxTouchPoints > 0);
+
+    if (isTouchDevice) {
+        if (cursorDot) cursorDot.style.display = 'none';
+        if (cursorOrb) cursorOrb.style.display = 'none';
+        document.body.style.cursor = 'auto';
+    } else if (cursorDot && cursorOrb) {
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let orbX = mouseX;
@@ -181,4 +189,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', updateActiveNavbarLink);
     updateActiveNavbarLink(); // Initialize on page load
+
+    // --- Mobile Menu Toggle ---
+    const navToggle = document.querySelector('.nav-toggle');
+    const navCenter = document.querySelector('.nav-center');
+
+    if (navToggle && navCenter) {
+        navToggle.addEventListener('click', () => {
+            const isActive = navToggle.classList.toggle('active');
+            navCenter.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+            navToggle.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+        });
+
+        // Close menu when clicking on nav links
+        const navLinksMobile = navCenter.querySelectorAll('a');
+        navLinksMobile.forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navCenter.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
 });

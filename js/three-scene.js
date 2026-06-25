@@ -35,9 +35,30 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let loadedModel;
     let targetBone = null;
+    let baseY = -3.2;
     
     let mouseX = 0;
     let mouseY = 0;
+
+    function adjustModelScaleAndPosition() {
+        if (!loadedModel) return;
+        
+        const width = window.innerWidth;
+        if (width <= 480) {
+            loadedModel.scale.set(1.9, 1.9, 1.9);
+            baseY = -1.9;
+        } else if (width <= 768) {
+            loadedModel.scale.set(2.3, 2.3, 2.3);
+            baseY = -2.3;
+        } else if (width <= 1024) {
+            loadedModel.scale.set(2.7, 2.7, 2.7);
+            baseY = -2.7;
+        } else {
+            loadedModel.scale.set(3.2, 3.2, 3.2);
+            baseY = -3.2;
+        }
+        loadedModel.position.set(0, baseY, 0);
+    }
     
     // Track mouse for bone rotation
     window.addEventListener('mousemove', (e) => {
@@ -49,9 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const model = gltf.scene;
         loadedModel = model;
         
-        // Position and scale to fit waist-up
-        model.position.set(0, -3.2, 0);
-        model.scale.set(3.2, 3.2, 3.2); 
+        // Position and scale to fit waist-up dynamically
+        adjustModelScaleAndPosition();
         scene.add(model);
  
         // Find spine/neck/head bone to rotate
@@ -90,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mixer) {
             mixer.update(delta);
         } else if (loadedModel) {
-            // Apply a subtle floating if there are no skeleton animations
-            loadedModel.position.y = -3.2 + Math.sin(clock.elapsedTime * 1.5) * 0.05;
+            // Apply a subtle floating if there are no skeleton animations using dynamic baseY
+            loadedModel.position.y = baseY + Math.sin(clock.elapsedTime * 1.5) * 0.05;
         }
  
         // Apply mouse tracking to bone
@@ -119,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderer.setSize(width, height);
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
+            
+            adjustModelScaleAndPosition();
         }
     });
 });
